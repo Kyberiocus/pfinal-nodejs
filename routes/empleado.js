@@ -2,7 +2,7 @@ const express = require('express');
 const empleado = express.Router();
 const db = require('../config/database');
 
-empleado.post("/", async (req, res, next) => {
+empleado.post("/altas", async (req, res, next) => {
     const { name_empleado, lastname_empleado, tel_empleado, email_empleado, address_empleado } = req.body;
     if(name_empleado && lastname_empleado && tel_empleado && email_empleado && address_empleado){
         let query = "INSERT INTO empleados(name_empleado, lastname_empleado, tel_empleado, email_empleado, address_empleado)";
@@ -18,8 +18,9 @@ empleado.post("/", async (req, res, next) => {
     return res.status(500).json({ code: 500, message: "Campos incompletos"})
 });
 
-empleado.delete("/:id([0-9]{1,3})", async (req, res, next) => {
-    const query = `DELETE FROM empleados WHERE id_empleado=${req.params.id}`;
+empleado.delete("/bajas/:id([0-9]{1,3})", async (req, res, next) => {
+    const { id_empleado } = req.body;
+    const query = `DELETE FROM empleados WHERE id_empleado=${id_empleado}`;
 
     const rows = await db.query(query);
     if(rows.affectedRows == 1){
@@ -28,7 +29,7 @@ empleado.delete("/:id([0-9]{1,3})", async (req, res, next) => {
     return res.status(404).json({code: 404, message: "Empleado no encontrado"});
 });
 
-empleado.put("/:id([0-9]{1,3})", async (req, res, next) => {
+empleado.put("/cambios/:id([0-9]{1,3})", async (req, res, next) => {
     const { name_empleado, lastname_empleado, tel_empleado, email_empleado, address_empleado } = req.body;
 
     if(name_empleado && lastname_empleado && tel_empleado && email_empleado && address_empleado){
